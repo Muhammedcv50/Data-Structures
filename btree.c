@@ -19,19 +19,32 @@ struct node* getnode(int x)
     return ptr;
 }
 
-struct node* search(struct node* rt,int data) {
-   struct node *ptr;
+struct node* search(struct node* rt,int data)
+ {
+   struct node *ptr,*l=NULL,*r=NULL;
+
    ptr=rt;
-   if(ptr->data=data)
-   return ptr;
-    
-   else
-   {
+
+      if(ptr->data==data)
+           return ptr;
+
       if(ptr->rc!=NULL)
-       search(ptr->rc,data);
+       r = search(ptr->rc,data);
+
       if(ptr->lc!=NULL)
-       search(ptr->rc,data);
-   }
+       l = search(ptr->lc,data);
+
+      if(r!=NULL)
+        return r;
+
+      else if(l!=NULL)
+        return l;
+
+      else
+        {printf("NUllllll");
+         return NULL;}
+
+  
 }
 
 struct node *root ;
@@ -43,6 +56,8 @@ void insert(int data,int pdt) {
    ptr->data=data;
    ptr->lc=NULL;
    ptr->rc=NULL;
+   if(prnt!=NULL)
+{
    if(prnt->rc==NULL)
     { prnt->rc=ptr;
       printf("Node Inserted .. ");}
@@ -52,6 +67,10 @@ void insert(int data,int pdt) {
    else
      printf("\nNo space to insert!!");
    }
+
+   else
+     printf("No node with value %d !!",pdt);
+}
 
 
 void main()
