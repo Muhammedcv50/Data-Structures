@@ -12,6 +12,35 @@ struct node {
 struct node *root ;
 
 
+void inorder(struct node*ptr)
+{if(ptr!=NULL)
+  {inorder(ptr->lc);
+   printf("%d ",ptr->data);
+   inorder(ptr->rc);
+  }
+}
+
+
+void preorder(struct node*ptr)
+{if(ptr!=NULL)
+  {
+   printf("%d ",ptr->data);
+   preorder(ptr->lc);
+   preorder(ptr->rc);
+  }
+}
+
+
+void postorder(struct node*ptr)
+{if(ptr!=NULL)
+  {
+    postorder(ptr->lc);
+    postorder(ptr->rc);
+    printf("%d ",ptr->data);
+  }
+}
+
+
 
 struct node* getnode(int x)
 {
@@ -22,58 +51,84 @@ struct node* getnode(int x)
     return ptr;
 }
 
-struct node* search(struct node* rt,int data)
+
+
+
+ struct node* search( struct node*ptr,int x)
  {
-   struct node *ptr,*l=NULL,*r=NULL;
-   printf("Searching");
-   ptr=rt;
+   if(ptr->data==x)
+     return ptr;
+   if(ptr->lc!=NULL)
+     search(ptr->lc,x);
+   if(ptr->rc!=NULL)
+     search(ptr->rc,x);
+   if(ptr->rc==NULL && ptr->lc==NULL)
+     return NULL;
+ } 
 
-      if(ptr->data==data)
-           return ptr;
-printf("Jumping");
-      if(ptr->rc!=NULL)
-       r = search(ptr->rc,data);
-
-      if(ptr->lc!=NULL)
-       l = search(ptr->lc,data);
-
-      if(r!=NULL)
-        return r;
-
-      else if(l!=NULL)
-        return l;
-
+void insert(int prt, int x)
+{
+  struct node *pt;
+  int op=0;
+  struct node *new ;
+  pt= search(root,prt);
+  printf("\n\n%d\n\n",pt->data);
+  if(pt==NULL)
+       printf("Parent not found !!");     
+  else
+    { if(pt->lc==NULL||pt->rc==NULL)
+      {
+       new=getnode(x);
+       if(pt->lc==NULL && pt->rc==NULL)
+       { 
+         printf("\nInsert node as -\n1.Right Child\n2.Left Child\n\nChoose any option - ");
+         scanf("%d",&op);
+       }
+       if(pt->rc!=NULL||op==2)
+         {pt->lc=new;
+          printf("\nNode inserted as left child");}
+       else
+          {pt->rc=new;
+          printf("\nNode inserted as right child");}
+      }
       else
-        {
-         return NULL;}
-
-printf("Searching");
-  
+        printf("Cannot insert to given node!!");
+    } 
+             
 }
 
+ struct node* parent(struct node*ptr,int x)
+ {
+   if(ptr->rc->data==x||(ptr->lc->data==x))
+     return ptr;
+   if(ptr->lc!=NULL)
+     search(ptr->lc,x);
+   if(ptr->rc!=NULL)
+     search(ptr->rc,x);
+   if(ptr->rc==NULL && ptr->lc==NULL)
+     return NULL;
+ } 
 
-
-void insert(int data,int pdt) {
-   struct node *prnt;
-   struct node *ptr;
-   prnt=search(root,pdt) ;
-   ptr->data=data;
-   ptr->lc=NULL;
-   ptr->rc=NULL;
-   if(prnt!=NULL)
+void delete(int x)
 {
-   if(prnt->lc==NULL)
-    { prnt->lc=ptr;
-      printf("Node Inserted as lc.. ");}
-   else if(prnt->rc==NULL)
-     { prnt->rc=ptr;
-      printf("Node Inserted as rc .. ");}
+ struct node *pt;
+ struct node *prnt;
+ pt= search(root,x);
+ if(pt->rc==NULL&&pt->lc==NULL)
+  {
+   prnt=parent(root,x);
+   printf("\n%d\n",prnt->data);
+   if(pt==prnt->lc)
+     prnt->lc=NULL;
    else
-     printf("\nNo space to insert!!");
-   }
+     prnt->rc=NULL;
 
-   else
-     printf("No node with value %d !!",pdt);
+  printf("Node successfully deleted.");
+  }
+   
+ else
+  printf("Not a  leaf node");
+
 }
 
 
@@ -85,7 +140,7 @@ void main()
   
     while(1)
     {
-    printf("\n\n1.Insert\n2.Delete\n3.Display\n4.Exit\n\nEnter ur choice - ");
+    printf("\n\n1.Insert\n2.Delete\n3.Traversal\n4.Exit\n\nEnter ur choice - ");
     scanf("%d",&ch);
     switch(ch)
     {
@@ -93,7 +148,18 @@ void main()
                scanf("%d",&pd);
                printf("Enter the data to be inserted - ");
                scanf("%d",&ed);
-               insert(ed,pd);
+               insert(pd,ed);
+               break;
+      case 2 : printf("Enter the data of node to be deleted - ");
+               scanf("%d",&ed);
+               delete(ed);
+               break;
+      case 3 : printf("\nInorder - ");
+               inorder(root);
+               printf("\nPreorder - ");
+               preorder(root);
+               printf("\nPostorder - ");
+               postorder(root);
                break;
       default: exit(0);
     }
